@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "racelog"
+version = "0.1.0"
+description = "Read RaceChrono sessions (.rcz archives and CSV exports) and track files. Shared by SlideFinder and Lap Compare."
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = ["numpy", "pandas"]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+racelog = ["data/tracks/*.rcz"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SlideFinder</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="top">
+  <h1>SlideFinder</h1>
+  <span class="sub">Find the slides in a RaceChrono session. Everything stays on this computer.</span>
+</header>
+
+<main>
+  <section id="drop" class="panel dropzone" tabindex="0" role="button"
+           aria-label="Choose a RaceChrono CSV file">
+    <input type="file" id="file" accept=".rcz,.csv,text/csv" hidden>
+    <div class="drop-title">Drop a RaceChrono session here, or click to choose one</div>
+    <div class="muted">Use the session file (.rcz): it's about a tenth the size of a CSV export. CSV exports (format 3) work too.</div>
+    <div id="progress" class="progress" hidden><div id="bar"></div></div>
+    <div id="drop-msg" class="msg" role="status"></div>
+  </section>
+
+  <div id="workspace" hidden>
+    <section class="panel" id="summary" aria-label="Session"></section>
+
+    <section class="panel" id="controls" aria-label="Detection settings">
+      <div class="row">
+        <div class="field-label" id="sens-label">Sensitivity</div>
+        <div class="seg" id="sens" role="radiogroup" aria-labelledby="sens-label"></div>
+        <div id="count" class="count" role="status"></div>
+      </div>
+      <p id="note" class="muted small"></p>
+
+      <details id="advanced">
+        <summary>Advanced</summary>
+        <div id="adv-fields" class="adv-grid"></div>
+        <div class="row">
+          <label class="inline">Speed in
+            <select id="units"><option value="mph">mph</option><option value="kmh">km/h</option></select>
+          </label>
+          <label class="inline">Time zero at
+            <input type="number" id="tstart" step="0.1" min="0" placeholder="auto"> s into the data
+          </label>
+          <button class="plain" id="reset" type="button">Reset to preset</button>
+        </div>
+      </details>
+    </section>
+
+    <section class="panel" id="video" aria-label="Video">
+      <div class="row">
+        <label class="inline">Each video file is
+          <input type="text" id="cliplen" value="12:48" size="14" aria-describedby="cliphelp"> long
+        </label>
+        <label class="inline">Video offset
+          <input type="number" id="offset" step="0.1" value="0"> s
+        </label>
+        <span id="cliphelp" class="muted small">Use a list like 12:48,12:47,05:10 if the files differ.</span>
+      </div>
+      <details id="sync">
+        <summary>Line up with my video</summary>
+        <p class="muted small">Find one slide in your footage, then tell me where you saw it. I'll work out
+          the offset so every other slide lands in the right clip.</p>
+        <div class="row">
+          <label class="inline">Slide
+            <select id="sync-slide"></select>
+          </label>
+          <label class="inline">is in clip <input type="number" id="sync-clip" min="1" value="1" style="width:4.5em"></label>
+          <label class="inline">at <input type="text" id="sync-time" placeholder="mm:ss" size="7"></label>
+          <button class="plain" id="sync-go" type="button">Line up</button>
+        </div>
+        <div id="sync-msg" class="msg" role="status"></div>
+      </details>
+    </section>
+
+    <section id="slides-section" aria-label="Slides">
+      <div class="row toolbar">
+        <button class="plain" id="export" type="button">Export CSV</button>
+        <button class="plain" id="toggle-hidden" type="button" hidden></button>
+        <span class="muted small">Click &ldquo;Not a slide&rdquo; to hide one. Biggest first.</span>
+      </div>
+      <div class="table-wrap"><table id="slides-table"></table></div>
+      <div id="empty" class="empty" hidden></div>
+    </section>
+  </div>
+</main>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

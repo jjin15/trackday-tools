@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lap Compare</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="top">
+  <h1>Lap Compare</h1>
+  <span class="sub">Overlay laps from a RaceChrono session. Everything stays on this computer.</span>
+</header>
+
+<main>
+  <section id="drop" class="panel dropzone" tabindex="0" role="button"
+           aria-label="Choose a RaceChrono session file">
+    <input type="file" id="file" accept=".rcz,.csv,text/csv" hidden>
+    <div class="drop-title">Drop a RaceChrono session here, or click to choose one</div>
+    <div class="muted">Use the session file (.rcz): it's about a tenth the size of a CSV export. CSV exports (format 3) work too.</div>
+    <div id="progress" class="progress" hidden><div id="bar"></div></div>
+    <div id="drop-msg" class="msg" role="status"></div>
+  </section>
+
+  <div id="workspace" hidden>
+    <section class="panel" id="summary" aria-label="Session"></section>
+
+    <section class="panel" id="slides-panel" aria-label="Slide markers">
+      <div class="row">
+        <button class="plain" id="load-slides" type="button">Load slides&hellip;</button>
+        <input type="file" id="slides-file" accept=".csv,text/csv" hidden>
+        <button class="plain" id="clear-slides" type="button" hidden>Remove slide markers</button>
+        <span id="slides-msg" class="muted small" role="status">Mark where the slides are: choose the CSV exported from SlideFinder for this session.</span>
+      </div>
+    </section>
+
+    <section id="viewer-section" aria-label="Lap comparison">
+      <div id="lap-loading" class="empty" hidden>Loading lap data (a few seconds)&hellip;</div>
+      <div id="lap-viewer" hidden>
+        <div class="row" id="lv-laps" role="group" aria-label="Laps to compare"></div>
+        <div class="row" style="margin-top:8px">
+          <button class="plain" id="lv-fastest" type="button">Fastest 3</button>
+          <button class="plain" id="lv-clear" type="button">Clear laps</button>
+          <label class="inline">Delta reference <select id="lv-ref"></select></label>
+          <label class="inline"><input type="checkbox" id="lv-markers" checked> Show slides</label>
+          <label class="inline"><input type="checkbox" id="lv-table"> Table view</label>
+        </div>
+        <div id="lv-msg" class="msg" role="status"></div>
+        <div class="lv-main">
+          <aside>
+            <input type="search" id="lv-filter" placeholder="Filter signals" aria-label="Filter signals">
+            <div id="lv-signals"></div>
+          </aside>
+          <div>
+            <div id="lv-plot-wrap"><div id="lv-plot"></div></div>
+            <div id="lv-tablewrap" class="table-wrap" hidden></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script src="/static/plotly.min.js"></script>
+<script src="/static/laps.js"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>
