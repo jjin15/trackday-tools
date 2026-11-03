@@ -8,6 +8,7 @@ version = "0.1.0"
 description = "Compare laps from RaceChrono sessions: overlay any signals against distance."
 readme = "README.md"
 requires-python = ">=3.9"
+license = {text = "MIT"}
 dependencies = [
     "racelog>=0.1.0",
     "numpy",

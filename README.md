@@ -74,3 +74,7 @@ Stop either one with Ctrl+C in the terminal.
 The browser tests need Chromium for Playwright (`.venv/bin/python -m playwright install chromium`) and are skipped without it. A few tests compare against a private real session and are skipped if it isn't present.
 
 [`CLAUDE.md`](CLAUDE.md) is the index for anyone (or any assistant) picking the project up, and [`docs/HANDOFF.md`](docs/HANDOFF.md) says where things stand and what to do next.
+
+## License
+
+[MIT](LICENSE).
