@@ -5,6 +5,8 @@
 ## What exists
 Three packages in one repo (`packages/`): **`racelog`** (reads RaceChrono `.rcz` and CSV, tracks, sessions), **`slidefinder`** (finds slides, ranks them, maps to GoPro clips; CLI + web on :8765), **`lapcompare`** (overlays laps; CLI + web on :8766). Apps depend on `racelog` only. Layout and data flow: `ARCHITECTURE.md`.
 
+**Turn numbers (added 2026-11-06):** `racelog.turns` labels a position with the driver's own turn ("T7", "after T7"). Bundled maps: Sonoma (spans confirmed by the driver) and Laguna Seca v2022 (turn numbers confirmed; spans estimated as braking zone to ~3% of a lap past the apex). SlideFinder shows the turn instead of the sector when a map exists (sector stays in the CSV and under it in the page). Real Sonoma session: same 21 slides, 10 at T7 (the hairpin). To add a track (West, East...): pick a clean lap, get the driver to confirm turn numbers and spans in metres from start/finish, then `turns.build_turn_map(...)` -> `packages/racelog/src/racelog/data/turns/<track>.json`. The driver's original turn tables live in the LapAnalysis project's memory (`sonoma-turn-map`, `laguna-seca-turn-map`).
+
 SlideFinder is done for its scope. Lap Compare is **v0**: one session at a time, one signal viewer, plus loading SlideFinder's slides as markers. The cross-session library and all analysis are **designed but not built** (`docs/lapcompare/DESIGN.md`, `docs/lapcompare/ANALYSIS-IDEAS.md`).
 
 ## Verified (2026-11-03)

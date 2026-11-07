@@ -18,7 +18,7 @@ dev = ["pytest"]
 where = ["src"]
 
 [tool.setuptools.package-data]
-racelog = ["data/tracks/*.rcz"]
+racelog = ["data/tracks/*.rcz", "data/turns/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

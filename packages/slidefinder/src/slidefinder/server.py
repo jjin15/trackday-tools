@@ -20,6 +20,7 @@ from racelog import loader
 from racelog.start import detect_start
 from racelog.tracks import (TrackError, TrackInfo, add_user_track, find_crossings, list_tracks,
                             load_gates, match_session_track)
+from racelog.turns import find_turns
 
 from . import __version__
 from .detect.auto import DetectionUnavailable, detect
@@ -54,6 +55,7 @@ class Record:
         self.track = track
         self.gates = load_gates(track.path) if track else None
         self.crossings = find_crossings(self.session, self.gates) if self.gates else None
+        self.turn_map = find_turns(track.name if track else self.session.track_name)
 
     def summary(self) -> dict:
         s = self.session
@@ -66,6 +68,7 @@ class Record:
             "part": self.part,
             "track_name": s.track_name,
             "track": {"name": self.track.name} if self.track else None,
+            "has_turns": self.turn_map is not None,
             "laps": int(len(lap_numbers)),
             "lap_range": [int(lap_numbers.min()), int(lap_numbers.max())] if len(lap_numbers) else None,
             "duration_s": round(s.duration, 1),
@@ -191,7 +194,8 @@ def create_app() -> FastAPI:
             raise HTTPException(422, str(err))
         t_zero = rec.t_start if t_start is None else t_start
         events = build_events(rec.session, detection.runs, gates=rec.gates, t_zero=t_zero,
-                              offset=offset, clip_lengths=lengths, crossings_cache=rec.crossings)
+                              offset=offset, clip_lengths=lengths, crossings_cache=rec.crossings,
+                              turn_map=rec.turn_map)
         rows = []
         if not events.empty:
             events = rank_events(events, "severity")

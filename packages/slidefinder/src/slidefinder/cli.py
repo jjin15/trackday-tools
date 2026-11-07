@@ -11,6 +11,7 @@ from .presets import DEFAULT_PRESET, PRESETS
 from racelog import loader
 from racelog.start import detect_start
 from racelog.tracks import TrackError, find_track, load_gates, match_session_track
+from racelog.turns import find_turns
 from racelog.util import fmt_time
 from .report import build_events, rank_events
 from .sync import parse_clip_lengths
@@ -89,15 +90,17 @@ def run(args) -> int:
             return 0
         print(f"Steering sign {'+' if sign > 0 else '-'}, {slope:.3f} deg/s yaw per deg steer.")
 
-    gates = None
+    gates = turn_map = None
     if args.track and args.track.lower() != "none":
         track = find_track(args.track)
         gates = load_gates(track.path)
+        turn_map = find_turns(track.name)
     elif not args.track:
         track = loader.embedded_track(args.session) or match_session_track(session.track_name)
+        turn_map = find_turns(track.name if track else session.track_name)
         if track:
             gates = load_gates(track.path)
-            print(f"Track: {track.name}")
+            print(f"Track: {track.name}" + (" (with turn numbers)" if turn_map else ""))
         elif session.track_name:
             print(f"No track file for '{session.track_name}', so sectors are skipped "
                   f"(add one with --track path/to/file.rcz).")
@@ -117,7 +120,8 @@ def run(args) -> int:
     runs = detection.runs
     clip_lengths = None if args.clip_length.lower() == "none" else parse_clip_lengths(args.clip_length)
     events = build_events(session, runs, gates=gates, t_zero=t_zero, offset=args.offset,
-                          clip_lengths=clip_lengths, relabel_laps=not args.keep_lap_numbers)
+                          clip_lengths=clip_lengths, relabel_laps=not args.keep_lap_numbers,
+                          turn_map=turn_map)
     if events.empty:
         print("No slides found. Try a looser --sensitivity (balanced or loose).")
         return 0

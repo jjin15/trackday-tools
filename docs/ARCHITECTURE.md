@@ -32,6 +32,7 @@ Dev setup is one venv at the repo root with all three installed editable; `pytes
 | `rcz.py` | `.rcz`: `list_parts`, `Channels` (raw arrays), `load_session`, `CAN_CHANNELS`, `interp`. Errors: `RczFormatError`. |
 | `loader.py` | One entry point for both formats: `load_session`, `list_parts`, `default_part`, `embedded_track`, `track_name`, `FormatError` tuple. |
 | `tracks.py` | `.rcz` track files: `load_gates`, registry (`list_tracks`, `match_session_track`, `find_track`), `add_user_track`, `find_crossings`, `sector_at`. |
+| `turns.py` | Turn maps (`data/turns/*.json`, user's in `~/.racelog/turns`): `find_turns(track_name)`, `TurnMap.labels(lat, lon)` -> "T7" / "after T7", `build_turn_map` to make one. SlideFinder's `turn` column comes from here. |
 | `start.py` | `detect_start`: when the car leaves the pits and starts driving on track. |
 | `util.py` | `fmt_time`. |
 | `testing.py` | Synthetic sessions and `.rcz`/CSV writers for tests in any package. Not part of the reading API. |

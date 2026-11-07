@@ -238,8 +238,8 @@
       if (isHidden) tr.className = "hidden-row";
       tr.insertCell().textContent = e.rank;
       const where = tr.insertCell();
-      where.append(text("div", `Lap ${e.lap === "" ? "-" : e.lap}${hasSector && e.sector_name ? " · " + e.sector_name : ""}`));
-      where.append(text("div", `data ${e.session_time}`, "muted small"));
+      where.append(text("div", `Lap ${e.lap === "" ? "-" : e.lap}${place(e) ? " · " + place(e) : ""}`));
+      where.append(text("div", `data ${e.session_time}${e.turn && hasSector && e.sector_name ? " · sector " + e.sector_name : ""}`, "muted small"));
       const find = tr.insertCell();
       if (hasClip && e.clip !== "" && e.clip != null) {
         const d = document.createElement("div"); d.className = "clip";
@@ -259,6 +259,9 @@
     });
     renderSync();
   }
+
+  // the turn ("T7", "after T7") when the track has a turn map, otherwise the sector
+  function place(e) { return e.turn || e.sector_name || ""; }
 
   function detailText(e) {
     const speed = `${Math.round(e.min_speed_mph / 2.23694 * speedFactor())} ${SPEED[state.units].label} min`;
@@ -287,7 +290,7 @@
     const sel = $("sync-slide"), keep = sel.value; sel.innerHTML = "";
     visibleEvents().forEach(e => {
       const o = document.createElement("option"); o.value = e.id;
-      o.textContent = `#${e.rank} · Lap ${e.lap}${e.sector_name ? " · " + e.sector_name : ""} · data ${e.session_time}`;
+      o.textContent = `#${e.rank} · Lap ${e.lap}${place(e) ? " · " + place(e) : ""} · data ${e.session_time}`;
       sel.append(o);
     });
     if ([...sel.options].some(o => o.value === keep)) sel.value = keep;

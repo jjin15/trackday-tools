@@ -10,6 +10,7 @@ import pandas as pd
 from .detect import Run
 from racelog.session import Session
 from racelog.tracks import find_crossings, sector_at
+from racelog.turns import TurnMap
 from racelog.util import fmt_time
 from .sync import locate_clip
 
@@ -19,11 +20,13 @@ MPH_PER_MS = 2.23694
 def build_events(session: Session, runs: List[Run], gates: Optional[List[Dict]] = None,
                  t_zero: float = 0.0, offset: float = 0.0,
                  clip_lengths: Optional[List[float]] = None,
-                 relabel_laps: bool = True, crossings_cache=None) -> pd.DataFrame:
+                 relabel_laps: bool = True, crossings_cache=None,
+                 turn_map: Optional[TurnMap] = None) -> pd.DataFrame:
     """Describe each run. Times are measured from t_zero; video time adds `offset`.
 
     `crossings_cache` is the (crossings, order) pair from tracks.find_crossings, to avoid
-    recomputing it when the same session is analysed repeatedly.
+    recomputing it when the same session is analysed repeatedly. `turn_map` adds a `turn`
+    column ("T7", "after T7").
     """
     df = session.df
     lap_base = df["lap_number"].min() - 1 if relabel_laps else 0
@@ -39,6 +42,9 @@ def build_events(session: Session, runs: List[Run], gates: Optional[List[Dict]] 
         clip, clip_time = locate_clip(video_t, clip_lengths) if clip_lengths else ("", "")
         events.append({
             "lap": int(lap - lap_base) if pd.notna(lap) else "",
+            # placed at the middle of the slide, so one that starts just before a turn still names that turn
+            **({"turn": turn_map.labels(df["latitude"].iloc[(s + e) // 2],
+                                        df["longitude"].iloc[(s + e) // 2])[0]} if turn_map else {}),
             **({"sector": sector, "sector_name": sector_name} if gates else {}),
             "time_in_lap_s": round(start_t - lap_start, 2) if pd.notna(lap) else "",
             "session_time": fmt_time(start_t - t_zero),

@@ -65,3 +65,19 @@ def test_presets_get_looser(session_factory):
     session = session_factory([(10.0, 0.4), (20.0, 0.6), (30.0, 1.0)])
     counts = {name: len(find_runs(session, p.params)) for name, p in PRESETS.items()}
     assert counts == {"strict": 1, "balanced": 2, "loose": 3}
+
+
+def test_turn_column_names_the_turn_the_slide_is_in(session_factory, tmp_path):
+    import json
+
+    import numpy as np
+    from racelog.turns import build_turn_map, read_turns
+
+    session = session_factory([(40.0, 1.5)], seconds=60)    # synthetic path runs north at 1.11 m/s
+    dist = np.linspace(0.0, 70.0, 71)
+    data = build_turn_map("Synthetic Track", 38.0 + dist / 111320.0, np.full_like(dist, -122.0), dist,
+                          [{"name": "T1", "from_m": 10, "to_m": 20}, {"name": "T2", "from_m": 40, "to_m": 50}])
+    (tmp_path / "turns.json").write_text(json.dumps(data))
+    events = build_events(session, find_runs(session, DetectParams()), turn_map=read_turns(tmp_path / "turns.json"))
+    assert list(events["turn"]) == ["T2"]
+    assert "turn" not in build_events(session, find_runs(session, DetectParams())).columns
